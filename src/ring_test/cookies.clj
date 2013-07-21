@@ -113,9 +113,21 @@
    Returns the updated cookie jar after the request along
    with the last request and last response."
   [app state request]
-  (let [request-with-cookies (update-request (:jar state) request)]
-    (->> (app request-with-cookies)
-         (update-state state request-with-cookies))))
+  (loop
+    [state state
+     request request
+     redirs 0]
+    (when (= redirs 5) (throw (RuntimeException. "Too many redirections")))
+    (let [request-with-cookies (update-request (:jar state) request) 
+          response (app request-with-cookies)
+          updated-state (update-state state request-with-cookies response)]
+      (if (contains? #{302 303} (:status response))
+        (recur
+          updated-state
+          (merge request {:uri (get-in response [:headers "Location"])
+                          :request-method :get})
+          (inc redirs))
+        updated-state))))
 
 (defn use-cookies [app]
   (partial with-cookies app))
