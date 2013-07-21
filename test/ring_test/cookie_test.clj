@@ -1,5 +1,6 @@
 (ns ring-test.cookie-test
-  (:use [compojure.core])
+  (:use [compojure.core]
+        [ring-test.helpers])
   (:require [clojure.test :refer :all]
             [ring-test.core :refer :all]
             [ring-test.cookies :refer [cookie-uri-path]]
@@ -27,10 +28,6 @@
 
 (defn set-cookie-with-domain [value domain]
   {:cookies {"a" {:value value :domain domain :path "/"}}})
-
-(defn print-cookies [cookies r]
-  {:body (apply str (map #(get-in cookies [% :value]) (sort (keys cookies))))
-   :status 200})
 
 (defroutes test-app-routes
   (GET "/" [] {})
