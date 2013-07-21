@@ -9,7 +9,7 @@ The function `run-ring-app` accepts a Ring application and one or more requests 
 ```clojure
 (ns ring-test.session-test
   (:require [clojure.test :refer :all]
-            [ring-test.core :refer :all]
+            [ring-test.core :refer [run-ring-app]]
             [ring.middleware.session :refer [wrap-session]]
             [ring.mock.request :refer [request]]))
 
@@ -19,13 +19,21 @@ The function `run-ring-app` accepts a Ring application and one or more requests 
 
 (def app (wrap-session handler))
 
-(deftest session-carries-over-memory
+(deftest session-carries-over
   (let [response
         (run-ring-app
           app
           (request :get "/")
           (request :get "/"))]
     (is (= "2" (:body response)))))
+```
+
+## Installation
+
+Add the following to your project.clj:
+
+```clojure
+[ring-test "0.1.1"]
 ```
 
 ## License
