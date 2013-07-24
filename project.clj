@@ -1,4 +1,4 @@
-(defproject ring-test "0.1.1"
+(defproject ring-test "0.1.2"
   :description "An integration test framework for Ring web applications."
   :url "http://github.com/rreas/ring-test"
   :license {:name "The MIT License"

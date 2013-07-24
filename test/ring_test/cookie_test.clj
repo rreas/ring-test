@@ -127,8 +127,6 @@
     (request :get "http://www.a.com/cookies/set" {:value 1})
     (request :get "http://qqq.a.com/cookies/show")))
 
-;FIXME: Setting cookies on www.foo.com from www.bar.com will not work for security reasons.
-
 (deftest disallows-subdomains-for-top-level
   (expect-response
     ""
@@ -154,4 +152,3 @@
     (request :get "http://a.com/cookies/with-domain" {:value 1 :domain ".a.com"})
     (request :get "http://www.a.com/cookies/set" {:value 2})
     (request :get "http://www.a.com/cookies/show")))
-

@@ -12,6 +12,9 @@
   (-> handler
       wrap-params))
 
+(defn- double-body []
+  (fn [resp] (request :get "/" {:s (str (:body resp) (:body resp))})))
+
 (deftest returns-a-response-single
   (let [resp (run-ring-app app (request :get "/" {:s "hi"}))]
     (is (= "hi" (:body resp)))
@@ -25,3 +28,9 @@
     (is (= "b" (:body resp)))
     (is (= 200 (:status resp)))))
 
+(deftest passes-response-to-next
+  (let [resp (run-ring-app
+               app
+               (request :get "/" {:s "b"})
+               (double-body))]
+    (is (= "bb" (:body resp)))))

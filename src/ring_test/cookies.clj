@@ -94,14 +94,19 @@
        (filter (partial valid-path? request))
        (filter not-expired?)))
 
-(defn- update-request
+(defmulti update-request
   "Adds cookies to the request header when applicable."
-  [jar request]
+  (fn [state request] (fn? request)))
+
+(defmethod update-request :default [{jar :jar} request]
   (if jar
     (assoc-in request
               [:headers "cookie"]
               (cookie-string (keep-valid-cookies jar request)))
     request))
+
+(defmethod update-request true [state request]
+  (update-request state (request (:response state))))
 
 (defn- update-state
   "Tracks cookies and last request/response through app."
@@ -118,7 +123,7 @@
      request request
      redirs 0]
     (when (= redirs 5) (throw (RuntimeException. "Too many redirections")))
-    (let [request-with-cookies (update-request (:jar state) request) 
+    (let [request-with-cookies (update-request state request) 
           response (app request-with-cookies)
           updated-state (update-state state request-with-cookies response)]
       (if (contains? #{302 303} (:status response))
