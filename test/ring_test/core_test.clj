@@ -13,7 +13,10 @@
       wrap-params))
 
 (defn- double-body []
-  (fn [resp] (request :get "/" {:s (str (:body resp) (:body resp))})))
+  (fn [resp _] (request :get "/" {:s (str (:body resp) (:body resp))})))
+
+(defn- print-scheme []
+  (fn [_ {method :request-method}] (request :get "/" {:s (name method)})))
 
 (deftest returns-a-response-single
   (let [resp (run-ring-app app (request :get "/" {:s "hi"}))]
@@ -34,3 +37,8 @@
                (request :get "/" {:s "b"})
                (double-body))]
     (is (= "bb" (:body resp)))))
+
+(deftest passes-request-to-next
+  (let [resp (run-ring-app app
+               (request :get "https://test.com/")
+               (print-scheme))]))

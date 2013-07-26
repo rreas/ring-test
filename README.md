@@ -32,8 +32,8 @@ The function `run-ring-app` accepts a Ring application and one or more requests 
 
 In the example above only request maps are passed to `run-ring-app`.
 If the next request depends on the previous request then pass a
-function accepting a single argument: the previous response.  The
-function should return a new request map.  For example:
+function accepting two arguments: the previous request and response.
+The function should return a new request map.  For example:
 
 ```clojure
 (defn handler [{params :params}]
@@ -45,7 +45,7 @@ function should return a new request map.  For example:
   (let [resp (run-ring-app
                app
                (request :get "/" {:s "b"}) ; Response body is "b".
-               (fn [{body :body}]
+               (fn [{body :body} _]
                  (request :get "/" {:s (str body body)})))]
          (is (= "bb" (:body resp)))))
 ```
@@ -55,7 +55,7 @@ function should return a new request map.  For example:
 Add the following to your project.clj:
 
 ```clojure
-[ring-test "0.1.2"]
+[ring-test "0.1.3"]
 ```
 
 ## License

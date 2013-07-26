@@ -106,7 +106,7 @@
     request))
 
 (defmethod update-request true [state request]
-  (update-request state (request (:response state))))
+  (update-request state (request (:response state) (:request state))))
 
 (defn- update-state
   "Tracks cookies and last request/response through app."
