@@ -6,6 +6,6 @@
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [ring/ring-core "1.2.0"]
                  [ring-mock "0.1.5"]
-                 [clj-time "0.5.1"]]
+                 [clj-time "0.6.0"]]
   :profiles {:dev {:dependencies [[compojure "1.1.5"]]}})
 
